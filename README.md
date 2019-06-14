@@ -9,7 +9,7 @@ int *ptr = mmap(NULL, MAPSIZE, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, 
 madvise(ptr, MAPSIZE, MADV_HUGEPAGE);
 ```
 ### 2. Runtime metrics
-```bash
+```console
 # cat /sys/kernel/mm/transparent_hugepage/enabled
 always [madvise] never
 # cat /proc/meminfo  | grep Anon
@@ -18,7 +18,7 @@ AnonHugePages:   4098048 kB
 ```
 
 ### 2. Perf results
-```bash
+```console
 # perf stat -e dTLB-loads,dTLB-load-misses,dTLB-stores,dTLB-store-misses -- ./no_advise
 dTLB-load-misses          #    0.40% of all dTLB cache hits
 1.877448789 seconds time elapsed
