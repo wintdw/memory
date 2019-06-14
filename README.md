@@ -1,6 +1,17 @@
 # MEMORY
 
-## IV. Transparent Hugepage (THP)
+## I. Process Memory Layout
+### 1. Stack & Heap
+#### a. Stack
+#### b. Heap
+## II Out-of-memory (OOM)
+### 1. Memory Leak
+#### a. Heap Leak
+#### b. Stack Leak?
+### 2. OOM Killer
+## III. Shared Memory - Inter-Process Communication (IPC)
+## IV. Copy-On-Write (COW)
+## V. Transparent Hugepage (THP)
 ### 1. Code
 ```C
 #define MAPSIZE (long)2000*1024*1024*4   // 4G
@@ -39,3 +50,6 @@ AnonHugePages:   4098048 kB
        2.018800299 seconds time elapsed
 ```
 ### 4. Not a silver bullet
+
+### 5. Rerferences
+https://alexandrnikitin.github.io/blog/transparent-hugepages-measuring-the-performance-impact/
