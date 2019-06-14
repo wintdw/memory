@@ -46,9 +46,9 @@ AnonHugePages:   4098048 kB
        2.018800299 seconds time elapsed
 ```
 ### 4. Not a silver bullet
-  Slower in some allocations
-  Waste of memory sometimes
-  Spikes because of khugepaged (compact, reclaim...)
+  * Slower in some allocations
+  * Waste of memory sometimes
+  * Spikes because of khugepaged (compact, reclaim...)
 
 ### 5. Rerferences
 https://alexandrnikitin.github.io/blog/transparent-hugepages-measuring-the-performance-impact/
