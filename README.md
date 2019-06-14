@@ -10,9 +10,9 @@
 ```
 ### 2. Runtime metrics
 ```
-        # cat /proc/meminfo  | grep Anon
-        AnonPages:       7696872 kB
-        AnonHugePages:   4098048 kB
+    # cat /proc/meminfo  | grep Anon
+    AnonPages:       7696872 kB
+    AnonHugePages:   4098048 kB
 ```
 
 ### 2. Perf results
