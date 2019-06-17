@@ -60,6 +60,7 @@ AnonHugePages:   4098048 kB
 ### 4. Not a silver bullet
   * Waste of memory sometimes
   * Slower because of compact, migration...
+  Example: Allocation of 20G...
   ```C
 # advise
 +   98.68%     5.72%  advise  libc-2.19.so       [.] memset                                            
@@ -78,20 +79,21 @@ AnonHugePages:   4098048 kB
   ```console
 # time ./advise 5000
 
-real	0m22.884s
-user	0m1.652s
+real    0m22.884s
+user    0m1.652s
 sys	    0m21.244s
 
-# time ./no_advise 5000
+# time ./no_advise 5000 
 
-real	0m8.520s
-user	0m1.240s
+real    0m8.520s
+user    0m1.240s
 sys	    0m7.272s
 
 # cat /proc/buddyinfo 
 Node 0, zone   Normal  64522 171562 156286 108640  56285  17902   3005    322    121     59   1199 
 Node 1, zone   Normal 253404 235857 186478  94067  28862   4424    463     66     45     39   2565 
 
+Allocation without compaction: (2565 + 1199) * 4M = 14.7G
   ```
 
 ### 5. Rerferences
