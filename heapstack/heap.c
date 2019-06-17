@@ -24,19 +24,6 @@ int leak_func() {
 
 int main() {
 	leak_func();
-	//int alloc_heap(ARRSIZE);
-	/* 
-	int *a[5000];
-	for (int i=0; i<5000; i++) {
-		a[i] = alloc_heap(100000);
-	}
-	for (int i=0; i<5000; i++) {
-		free(a[i]);
-	}
-	*/
-	//free(hp);
-	//alloc_stack(ARRSIZE);
-	//wrapper(ARRSIZE);
 	sleep(20000);
 	exit(0);
 }

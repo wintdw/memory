@@ -18,11 +18,12 @@
 ### Overcommit
 ### Shared Memory - Inter-Process Communication (IPC)
 ### Transparent Hugepage (THP)
-### 1. Code
+### 1. Simulations
 ```C
-#define MAPSIZE (long)2000*1024*1024*4   // 4G
+#define MAPSIZE 1024*1024*4     // 1m of int blocks
+long size = (long)MAPSIZE * (long)atoi(argv[1]);
 ...
-int *ptr = mmap(NULL, MAPSIZE, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+int *ptr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 madvise(ptr, MAPSIZE, MADV_HUGEPAGE);
 ```
 ### 2. Runtime metrics
@@ -33,8 +34,6 @@ always [madvise] never
 AnonPages:       7696872 kB
 AnonHugePages:   4098048 kB
 ```
-
-### 3. Perf results
 ```console
 # perf stat -e dTLB-load,dTLB-load-misses,cycles -- ./advise 2000
 
@@ -57,7 +56,7 @@ AnonHugePages:   4098048 kB
        3.508520242 seconds time elapsed
 ```
 
-### 4. Not a silver bullet
+### 3. Not a silver bullet
   * Waste of memory sometimes
   * Slower because of compact, migration...
   Example: Allocation of 20G...
@@ -79,15 +78,15 @@ AnonHugePages:   4098048 kB
   ```console
 # time ./advise 5000
 
-real    0m22.884s
-user    0m1.652s
-sys	    0m21.244s
+real  0m22.884s
+user  0m1.652s
+sys	  0m21.244s
 
 # time ./no_advise 5000 
 
-real    0m8.520s
-user    0m1.240s
-sys	    0m7.272s
+real  0m8.520s
+user  0m1.240s
+sys   0m7.272s
 
 # cat /proc/buddyinfo 
 Node 0, zone   Normal  64522 171562 156286 108640  56285  17902   3005    322    121     59   1199 
