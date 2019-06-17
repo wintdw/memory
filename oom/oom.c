@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#define ALLOCSZ = 1024*1024*1024*3  // 6G
+#define ALLOCSZ 1024*1024*1024*3l  // 3G
 
 int main() {
 	// declare memory allocation
