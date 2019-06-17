@@ -8,8 +8,7 @@
 int main() {
 	// declare memory allocation
 	int *array = malloc(ALLOCSZ);
-	memset(array, 0, ARRSIZE*sizeof(int)/4);
+	memset(array, 0, ALLOCSZ/4);
 
-	sleep(20000);
 	exit(0);
 }
