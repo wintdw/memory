@@ -5,9 +5,9 @@
 * [Process Memory Layout](#process-memory-layout)<br>
   * [Stack and Heap](#stack--heap)<br>
 * [Memory Mechanism](#memory-mechanism)<br>
+  * [Overcommit](#overcommit)<br>
   * [Out Of Memory (OOM)](#out-of-memory-oom)<br>
   * [Copy On Write (COW)](#copy-on-write-cow)<br>
-  * [Overcommit](#overcommit)<br>
   * [Shared Memory - Inter-process Communication (IPC)](#share-memory---inter-process-communication-ipc)<br>
   * [Transparent Hugepage (THP)](#transparent-hugepage-thp)<br>
 
@@ -47,9 +47,28 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 390636 / 4 * 1024 = 100002816 ~ 1m int objects
 ```
 ## Memory Mechanism
+### Overcommit
+#### Simulations
+```C
+#define ALLOCSZ 1024*1024*1024*6l  // 6G
+...
+void *array = malloc(ALLOCSZ);
+memset(array, 1, ALLOCSZ / 4);
+```
+```console
+# echo 1 > /proc/sys/vm/overcommit_memory
+```
+#### Result
+```console
+Address           Kbytes     RSS   Dirty Mode    Mapping
+00002aeede82b000 6291460 1572868 1572868 rw---   [ anon ]
+
+# cat /proc/meminfo
+Committed_AS:   13075236 kB   // 13G
+```
+With overcommit_memory set to 0 (default), application will be segfault'ed
 ### Out Of Memory (OOM)
 ### Copy-On-Write (COW)
-### Overcommit
 ### Shared Memory - Inter-Process Communication (IPC)
 ### Transparent Hugepage (THP)
 #### 1. Simulations
