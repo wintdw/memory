@@ -1,6 +1,5 @@
 # MEMORY
 
-
 ### Table of Contents
 **[Process Memory Layout](#process-memory-layout)**<br>
   **[Stack and Heap](#stack--heap)**<br>
@@ -57,9 +56,37 @@ AnonHugePages:   4098048 kB
        2.018800299 seconds time elapsed
 ```
 ### 4. Not a silver bullet
-  * Slower in some allocations
   * Waste of memory sometimes
-  * Spikes because of khugepaged (compact, reclaim...)
+  * Slower because of compact, reclaimation...
+  ```C
+# advise
++   98.68%     5.72%  advise  libc-2.19.so       [.] memset                                             ◆
++   98.68%     0.00%  advise  libc-2.19.so       [.] __libc_start_main                                  ▒
++   51.29%    51.29%  advise  [kernel.kallsyms]  [k] isolate_migratepages_range                         ▒
++   15.60%    15.60%  advise  [kernel.kallsyms]  [k] clear_page_c                                       ▒
++    6.67%     6.67%  advise  [kernel.kallsyms]  [k] compaction_alloc                                   ▒
+
+# no_advise
++   89.51%    14.30%  no_advise  libc-2.19.so       [.] memset
++   89.51%     0.00%  no_advise  libc-2.19.so       [.] __libc_start_main
++   31.85%    31.85%  no_advise  [kernel.kallsyms]  [k] clear_page_c
++   12.07%    12.07%  no_advise  [kernel.kallsyms]  [k] page_fault
++    8.31%     8.31%  no_advise  [kernel.kallsyms]  [k] _raw_spin_lock
+  ```
+  ```console
+# time ./advise 5000
+
+real	0m22.884s
+user	0m1.652s
+sys	0m21.244s
+
+# time ./no_advise 5000
+
+real	0m8.520s
+user	0m1.240s
+sys	0m7.272s
+
+  ```
 
 ### 5. Rerferences
 https://alexandrnikitin.github.io/blog/transparent-hugepages-measuring-the-performance-impact/
