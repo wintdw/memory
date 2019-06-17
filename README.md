@@ -1,10 +1,10 @@
 # MEMORY
 
 ### Table of Contents
-[Prerequisites](#prerequisites)<br>
-[Process Memory Layout](#process-memory-layout)<br>
+* [Prerequisites](#prerequisites)<br>
+* [Process Memory Layout](#process-memory-layout)<br>
   * [Stack and Heap](#stack--heap)<br>
-[Memory Mechanism](#memory-mechanism)<br>
+* [Memory Mechanism](#memory-mechanism)<br>
   * [Out Of Memory (OOM)](#out-of-memory-oom)<br>
   * [Copy On Write (COW)](#copy-on-write-cow)<br>
   * [Overcommit](#overcommit)<br>
@@ -13,12 +13,13 @@
 
 ## Prerequisites
 ### C Functions
-memset
-malloc alloca
-mmap
-madvise, MADV_HUGEPAGE
+* memset
+* malloc alloca
+* mmap
+* madvise, MADV_HUGEPAGE
 ### Tools
-pmap
+* pmap
+* perf
 ## Process Memory Layout
 ### Stack & Heap
 ```C
