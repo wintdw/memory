@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <alloca.h>
+#include <string.h>
 
 // int = 4 bytes
 #define ARRSIZE 300*1024*1024
-#define FILELOC "big"
 
 // stack limit for system is 8192K
 int *alloc_stack(int size) {
