@@ -15,7 +15,7 @@
 ### C Functions
 * memset
 * malloc alloca
-* mmap
+* mmap MAP_NORESERVE MAP_PRIVATE MAP_SHARED
 * madvise MADV_HUGEPAGE
 ### Tools
 * pmap
@@ -52,11 +52,8 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 ```C
 #define ALLOCSZ 1024*1024*1024*6l  // 6G
 ...
-void *array = malloc(ALLOCSZ);
-memset(array, 1, ALLOCSZ / 4);
-```
-```console
-# echo 1 > /proc/sys/vm/overcommit_memory
+int *ptr = mmap(NULL, ALLOCSZ, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0);
+memset(ptr, 0, ALLOCSZ/4);
 ```
 #### Result
 ```console
