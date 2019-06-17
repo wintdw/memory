@@ -2,23 +2,47 @@
 
 ### Table of Contents
 **[Process Memory Layout](#process-memory-layout)**<br>
-  **[Stack and Heap](#stack--heap)**<br>
+    **[Stack and Heap](#stack--heap)**<br>
 **[Memory Mechanism](#memory-mechanism)**<br>
-  **[Out Of Memory (OOM)](#out-of-memory-oom)**<br>
-  **[Copy On Write (COW)](#copy-on-write-cow)**<br>
-  **[Overcommit](#overcommit)**<br>
-  **[Shared Memory - Inter-process Communication (IPC)](#share-memory---inter-process-communication-ipc)**<br>
-  **[Transparent Hugepage (THP)](#transparent-hugepage-thp)**<br>
+    **[Out Of Memory (OOM)](#out-of-memory-oom)**<br>
+    **[Copy On Write (COW)](#copy-on-write-cow)**<br>
+    **[Overcommit](#overcommit)**<br>
+    **[Shared Memory - Inter-process Communication (IPC)](#share-memory---inter-process-communication-ipc)**<br>
+    **[Transparent Hugepage (THP)](#transparent-hugepage-thp)**<br>
 
 ## Process Memory Layout
 ### Stack & Heap
+```C
+// Allocate 100m int objects on heap (x2)
+alloc_heap(100000000);
+alloc_heap(100000000);
+```
+```C
+// Allocate 100m int objects on stack (x2)
+alloc_stack(100000000);
+alloc_stack(100000000);
+```
+#### Differences
+```console
+# Heap
+Address           Kbytes     RSS   Dirty Mode    Mapping
+00007f1562dd0000  781256  781256  781256 rw---   [ anon ]
+
+781256 / 4 * 1024 = 200001536 ~ 2m int objects
+
+# Stack
+Address           Kbytes     RSS   Dirty Mode    Mapping
+00007ffc51c26000  390636  390632  390632 rw---   [ stack ]
+
+390636 / 4 * 1024 = 100002816 ~ 1m int objects
+```
 ## Memory Mechanism
 ### Out Of Memory (OOM)
 ### Copy-On-Write (COW)
 ### Overcommit
 ### Shared Memory - Inter-Process Communication (IPC)
 ### Transparent Hugepage (THP)
-### 1. Simulations
+#### 1. Simulations
 ```C
 #define MAPSIZE 1024*1024*4     // 1m of int blocks
 long size = (long)MAPSIZE * (long)atoi(argv[1]);
@@ -26,7 +50,7 @@ long size = (long)MAPSIZE * (long)atoi(argv[1]);
 int *ptr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 madvise(ptr, MAPSIZE, MADV_HUGEPAGE);
 ```
-### 2. Runtime metrics
+#### 2. Runtime metrics
 ```console
 # cat /sys/kernel/mm/transparent_hugepage/enabled
 always [madvise] never
@@ -56,7 +80,7 @@ AnonHugePages:   4098048 kB
        3.508520242 seconds time elapsed
 ```
 
-### 3. Not a silver bullet
+#### 3. Not a silver bullet
   * Waste of memory sometimes
   * Slower because of compact, migration...
   Example: Allocation of 20G...
@@ -95,5 +119,5 @@ Node 1, zone   Normal 253404 235857 186478  94067  28862   4424    463     66   
 Allocation without compaction: (2565 + 1199) * 4M = 14.7G
   ```
 
-### 5. Rerferences
+#### 5. Rerferences
 https://alexandrnikitin.github.io/blog/transparent-hugepages-measuring-the-performance-impact/
