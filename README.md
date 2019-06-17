@@ -3,11 +3,17 @@
 
 ### Table of Contents
 **[Process Memory Layout](#process-memory-layout)**<br>
+***[Stack and Heap](#stack--heap)**<br>
 **[Memory Mechanism](#memory-mechanism)**<br>
+***[Out Of Memory (OOM)](#out-of-memory-oom)**<br>
+***[Copy On Write (COW)](#copy-on-write-cow)**<br>
+***[Overcommit](#overcommit)**<br>
+***[Shared Memory - Inter-process Communication (IPC)](#share-memory---inter-process-communication-ipc)**<br>
+***[Transparent Hugepage (THP)](#transparent-hugepage-thp)**<br>
 
 ## Process Memory Layout
 ### Stack & Heap
-## Mechanism
+## Memory Mechanism
 ### Out Of Memory (OOM)
 ### Copy-On-Write (COW)
 ### Overcommit
