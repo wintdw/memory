@@ -33,38 +33,40 @@ always [madvise] never
 AnonPages:       7696872 kB
 AnonHugePages:   4098048 kB
 ```
+
 ### 3. Perf results
 ```console
-# perf stat -e dTLB-load,dTLB-load-misses,cycles -- ./no_advise 
+# perf stat -e dTLB-load,dTLB-load-misses,cycles -- ./advise 2000
 
- Performance counter stats for './no_advise':
+ Performance counter stats for './advise 2000':
 
-     1,065,214,287      dTLB-load                                                   
-         2,554,625      dTLB-load-misses          #    0.24% of all dTLB cache hits 
-     8,993,703,771      cycles                   
+        34,435,997      dTLB-load                                                   
+            26,798      dTLB-load-misses          #    0.08% of all dTLB cache hits 
+     5,151,598,257      cycles                   
 
-       3.583700400 seconds time elapsed
+       2.135126528 seconds time elapsed
 
-# perf stat -e dTLB-load,dTLB-load-misses,cycles -- ./advise 
+# perf stat -e dTLB-load,dTLB-load-misses,cycles -- ./no_advise 2000
 
- Performance counter stats for './advise':
+ Performance counter stats for './no_advise 2000':
 
-        33,318,493      dTLB-load                                                   
-            12,788      dTLB-load-misses          #    0.04% of all dTLB cache hits 
-     4,844,397,465      cycles                   
+     1,064,333,895      dTLB-load                                                   
+         1,563,275      dTLB-load-misses          #    0.15% of all dTLB cache hits 
+     8,797,338,489      cycles                   
 
-       2.018800299 seconds time elapsed
+       3.508520242 seconds time elapsed
 ```
+
 ### 4. Not a silver bullet
   * Waste of memory sometimes
-  * Slower because of compact, reclaimation...
+  * Slower because of compact, migration...
   ```C
 # advise
-+   98.68%     5.72%  advise  libc-2.19.so       [.] memset                                             ◆
-+   98.68%     0.00%  advise  libc-2.19.so       [.] __libc_start_main                                  ▒
-+   51.29%    51.29%  advise  [kernel.kallsyms]  [k] isolate_migratepages_range                         ▒
-+   15.60%    15.60%  advise  [kernel.kallsyms]  [k] clear_page_c                                       ▒
-+    6.67%     6.67%  advise  [kernel.kallsyms]  [k] compaction_alloc                                   ▒
++   98.68%     5.72%  advise  libc-2.19.so       [.] memset                                            
++   98.68%     0.00%  advise  libc-2.19.so       [.] __libc_start_main                                
++   51.29%    51.29%  advise  [kernel.kallsyms]  [k] isolate_migratepages_range                       
++   15.60%    15.60%  advise  [kernel.kallsyms]  [k] clear_page_c                                     
++    6.67%     6.67%  advise  [kernel.kallsyms]  [k] compaction_alloc                                 
 
 # no_advise
 +   89.51%    14.30%  no_advise  libc-2.19.so       [.] memset
@@ -78,13 +80,17 @@ AnonHugePages:   4098048 kB
 
 real	0m22.884s
 user	0m1.652s
-sys	0m21.244s
+sys	    0m21.244s
 
 # time ./no_advise 5000
 
 real	0m8.520s
 user	0m1.240s
-sys	0m7.272s
+sys	    0m7.272s
+
+# cat /proc/buddyinfo 
+Node 0, zone   Normal  64522 171562 156286 108640  56285  17902   3005    322    121     59   1199 
+Node 1, zone   Normal 253404 235857 186478  94067  28862   4424    463     66     45     39   2565 
 
   ```
 
