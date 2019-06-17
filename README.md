@@ -16,7 +16,7 @@
 * memset
 * malloc alloca
 * mmap
-* madvise, MADV_HUGEPAGE
+* madvise MADV_HUGEPAGE
 ### Tools
 * pmap
 * perf
