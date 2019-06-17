@@ -93,8 +93,8 @@ not_so_imp is killed by OOM Killer
 ### Transparent Hugepage (THP)
 #### 1. Simulations
 ```C
-#define MAPSIZE 1024*1024*4     // 1m of int blocks
-long size = (long)MAPSIZE * (long)atoi(argv[1]);
+#define MAPSIZE 1024*1024*1024l     // 1G
+long size = MAPSIZE * atol(argv[1]);
 ...
 int *ptr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 madvise(ptr, MAPSIZE, MADV_HUGEPAGE);
@@ -108,7 +108,7 @@ AnonPages:       7696872 kB
 AnonHugePages:   4098048 kB
 ```
 ```console
-# perf stat -e dTLB-load,dTLB-load-misses,cycles -- ./advise 2000
+# perf stat -e dTLB-load,dTLB-load-misses,cycles -- ./advise 8
 
  Performance counter stats for './advise 2000':
 
@@ -118,7 +118,7 @@ AnonHugePages:   4098048 kB
 
        2.135126528 seconds time elapsed
 
-# perf stat -e dTLB-load,dTLB-load-misses,cycles -- ./no_advise 2000
+# perf stat -e dTLB-load,dTLB-load-misses,cycles -- ./no_advise 8
 
  Performance counter stats for './no_advise 2000':
 
@@ -149,13 +149,13 @@ AnonHugePages:   4098048 kB
 +    8.31%     8.31%  no_advise  [kernel.kallsyms]  [k] _raw_spin_lock
   ```
   ```console
-# time ./advise 5000
+# time ./advise 20
 
 real  0m22.884s
 user  0m1.652s
 sys	  0m21.244s
 
-# time ./no_advise 5000 
+# time ./no_advise 20
 
 real  0m8.520s
 user  0m1.240s
