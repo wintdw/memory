@@ -63,8 +63,31 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 # cat /proc/meminfo
 Committed_AS:   13075236 kB   // 13G
 ```
-With overcommit_memory set to 0 (default), application will be segfault'ed
 ### Out Of Memory (OOM)
+#### Simulation
+Same as Overcommit experiment
+#### Result
+```console
+# ./important & ./not_so_imp &
+20446 root      20   0 6295496 1.501g    936 S   0.0 38.8   0:04.60 important                           
+20447 root      20   0 6295496 1.201g    776 S   0.0 31.1   0:03.74 not_so_imp 
+
+# ./not_so_imp & 
+20573 root      20   0 6295496 1.201g    860 S   0.0 31.1   0:02.85 not_so_imp                          
+20447 root      20   0 6295496 1.201g    772 S   0.0 31.1   0:03.74 not_so_imp
+
+important is killed by OOM Killer
+```
+```console
+# echo -1000 > /proc/20847/oom_score_adj
+
+# ./not_so_imp &
+20847 root      20   0 6295496 1.501g    848 S   0.0 38.8   0:04.40 important                           
+21018 root      20   0 6295496 1.201g    920 S   0.0 31.1   0:02.07 not_so_imp
+
+not_so_imp is killed by OOM Killer
+```
+
 ### Copy-On-Write (COW)
 ### Shared Memory - Inter-Process Communication (IPC)
 ### Transparent Hugepage (THP)
