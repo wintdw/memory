@@ -22,15 +22,22 @@
 * perf
 ## Process Memory Layout
 ### Stack & Heap
+#### Simulation
 ```C
-// Allocate 100m int objects on heap (x2)
-alloc_heap(100000000);
-alloc_heap(100000000);
+#define ONEG 1024*1024*1024l
+
+// Allocate 1G on heap (x2)
+alloc_heap(ONEG);
+alloc_heap(ONEG);
+
+// Allocate 1G on stack (x2)
+alloc_stack(ONEG);
+alloc_stack(ONEG);
 ```
-```C
-// Allocate 100m int objects on stack (x2)
-alloc_stack(100000000);
-alloc_stack(100000000);
+```console
+# gcc heapstack/heap.c -o heap
+# gcc heapstack/stack.c -o stack 
+# ./heap & ./stack &
 ```
 #### Differences
 ```console
@@ -38,22 +45,22 @@ alloc_stack(100000000);
 Address           Kbytes     RSS   Dirty Mode    Mapping
 00007f1562dd0000  781256  781256  781256 rw---   [ anon ]
 
-781256 / 4 * 1024 = 200001536 ~ 2m int objects
-
 # Stack
 Address           Kbytes     RSS   Dirty Mode    Mapping
 00007ffc51c26000  390636  390632  390632 rw---   [ stack ]
-
-390636 / 4 * 1024 = 100002816 ~ 1m int objects
 ```
 ## Memory Mechanism
 ### Overcommit
 #### Simulations
 ```C
-#define ALLOCSZ 1024*1024*1024*6l  // 6G
+#define MAPSIZE 1024*1024*1024l
 ...
-int *ptr = mmap(NULL, ALLOCSZ, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0);
-memset(ptr, 0, ALLOCSZ/4);
+int *ptr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0);
+memset(ptr, 0, size/4);
+```
+```console
+# gcc overcommitment/overcommitment.c -o overcommitment
+# ./overcommitment 6 & overcommitment 6 &
 ```
 #### Result
 ```console

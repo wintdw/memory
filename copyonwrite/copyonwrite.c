@@ -9,27 +9,27 @@
 #include <sys/wait.h>
 
 // int = 4 bytes
-#define ARRSIZE 300*1024*1024
-#define FILEMAP "big"
+#define MAPSIZE 1024*1024*1024l
 
 int main() {
 	// declare memory allocation
-	int *array = malloc(sizeof(int) * ARRSIZE);
-	memset(array, 0, ARRSIZE*sizeof(int));
+    long size = MAPSIZE * atol(argv[1]);
+	int *array = malloc(size);
+	memset(array, 0, size);
 
 	// Shared mem
 	pid_t child;
 	if ((child = fork()) == 0) {
 		int devNull = open("/dev/null", O_WRONLY|O_CREAT|O_APPEND);
-		int b = write(devNull, array, sizeof(int) * ARRSIZE);
+		int b = write(devNull, array, size);
 	}
 	if ((child = fork()) == 0) {
 		int devNull = open("/dev/null", O_WRONLY|O_CREAT|O_APPEND);
-		int b = write(devNull, array, sizeof(int) * ARRSIZE);
+		int b = write(devNull, array, size);
 	}
 	if ((child = fork()) == 0) {
 		int devNull = open("/dev/null", O_WRONLY|O_CREAT|O_APPEND);
-		int b = write(devNull, array, sizeof(int) * ARRSIZE);
+		int b = write(devNull, array, size);
 	}
 
 	sleep(20000);

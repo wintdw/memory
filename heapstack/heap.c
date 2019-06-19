@@ -3,17 +3,17 @@
 #include <unistd.h>
 #include <string.h>
 
-// int = 4 bytes
+#define ONEG 1024*1024*1024l
 
-int *alloc_heap(int size) {
-	int *alloc = malloc(sizeof(int) * size);
-	memset(alloc, 1, sizeof(int) * size);
+int *alloc_heap(long size) {
+	int *alloc = malloc(size);
+	memset(alloc, 1, size);
 	return alloc;
 }
 
 int leak_func() {
-	alloc_heap(100000000);
-	alloc_heap(100000000);
+	alloc_heap(ONEG);
+	alloc_heap(ONEG);
 }
 
 int main() {

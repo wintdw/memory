@@ -4,17 +4,16 @@
 #include <alloca.h>
 #include <string.h>
 
-// int = 4 bytes
-#define ARRSIZE 300*1024*1024
+#define ONEG 1024*1024*1024l
 
 // stack limit for system is 8192K
-int *alloc_stack(int size) {
-	int *alloc = alloca(sizeof(int) * size);
-	memset(alloc, 1, sizeof(int) * size);
+int *alloc_stack(long size) {
+	int *alloc = alloca(size);
+	memset(alloc, 1, size);
 	return alloc;
 }
 
-int stack_cal(int n, int m) {
+int stack_cal(long n, long m) {
 	int sum = 0;
 	int mat[n][m];
 	for (int i=0; i<n; i++) {
@@ -27,16 +26,10 @@ int stack_cal(int n, int m) {
 }
 
 int main() {
-	{
-		alloc_stack(ARRSIZE);
-	}
-	{
-		alloc_stack(ARRSIZE);
-	}
-	{
-		printf("%d\n", stack_cal(300, 1000000));
-	}
-	printf("Sleeping\n");
-	sleep(20000);
-	exit(0);
+    alloc_stack(ONEG);
+    alloc_stack(ONEG);
+    printf("%d\n", stack_cal(1024, 1024*1024));
+
+    sleep(20000);
+    exit(0);
 }

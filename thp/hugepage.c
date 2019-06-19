@@ -4,7 +4,7 @@
 #include <sys/mman.h>
 #include <string.h>
 
-#define MAPSIZE 1024*1024*4l     // 1m of int blocks
+#define MAPSIZE 1024*1024*1024l     // 1G
 
 int main(int argc, char *argv[]) {
     long size = MAPSIZE * atol(argv[1]);
