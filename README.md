@@ -5,7 +5,7 @@
 * [Process Memory Layout](#process-memory-layout)<br>
   * [Stack and Heap](#stack--heap)<br>
 * [Memory Mechanism](#memory-mechanism)<br>
-  * [Overcommit](#overcommit)<br>
+  * [Overcommitment](#overcommitment)<br>
   * [Out Of Memory (OOM)](#out-of-memory-oom)<br>
   * [Copy On Write (COW)](#copy-on-write-cow)<br>
   * [Shared Memory - Inter-process Communication (IPC)](#share-memory---inter-process-communication-ipc)<br>
@@ -50,7 +50,7 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 00007ffc51c26000  390636  390632  390632 rw---   [ stack ]
 ```
 ## Memory Mechanism
-### Overcommit
+### Overcommitment
 #### Simulations
 ```C
 #define MAPSIZE 1024*1024*1024l
