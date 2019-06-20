@@ -26,6 +26,7 @@
 * pmap: report memory map of a process. Interprets from /proc/.../maps & /proc/.../smaps
 * perf: performance analysis tools
 ## Process Memory Layout
+### Layout
 ### Stack & Heap
 #### Simulation
 ```C
@@ -48,12 +49,20 @@ alloc_stack(ONEG);
 ```console
 # Heap
 Address           Kbytes     RSS   Dirty Mode    Mapping
-00007f1562dd0000  781256  781256  781256 rw---   [ anon ]
+00007f5a61180000 2097160 2097160 2097160 rw---   [ anon ]
 
 # Stack
 Address           Kbytes     RSS   Dirty Mode    Mapping
-00007ffc51c26000  390636  390632  390632 rw---   [ stack ]
+00007ffc39367000 1048584 1048584 1048584 rw---   [ stack ]
 ```
+#### Explanations
+* By default, stack size for a process is limited to 8192KB, while heap doesnt have any limit
+```console
+stack size              (kbytes, -s) 8192
+```
+* Primitive values are stored inside stack
+* Stack memory will be recycled when function returns
+* Heap memory can be leaked
 ## Memory Mechanism
 ### Overcommitment
 #### Simulations
