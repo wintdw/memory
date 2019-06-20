@@ -13,13 +13,18 @@
 
 ## Prerequisites
 ### C Functions
-* memset
-* malloc alloca
-* mmap MAP_NORESERVE MAP_PRIVATE MAP_SHARED
-* madvise MADV_HUGEPAGE
+* memset: set the block memory to the specific value
+* malloc: allocate memory region from the heap
+* alloca: allocate memory region from the stack
+* mmap: creates a new memory mapping in the calling process’s virtual address space
+  * MAP_PRIVATE: modifications to the contents of the mapping are not visible to other processes
+  * MAP_SHARED: modifications to the contents of the mapping are visible to other processes that share the same mapping
+  * MAP_NORESERVE: allow overcommits
+* madvise: allows a process to advise the kernel about its future patterns of usage of a virtual memory region
+  * MADV_HUGEPAGE: enables Transparent Huge Pages (THP) for pages
 ### Tools
-* pmap
-* perf
+* pmap: report memory map of a process. Interprets from /proc/.../maps & /proc/.../smaps
+* perf: performance analysis tools
 ## Process Memory Layout
 ### Stack & Heap
 #### Simulation
