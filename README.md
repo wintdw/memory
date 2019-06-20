@@ -86,7 +86,7 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 Committed_AS:   13075236 kB   // 13G
 ```
 #### Explanations
-* Using malloc() and mmap() is declaration of memory allocation, and the kernel doesnt actually allocate physical memory for it. memset() writes to the region, so that the memory is really allocated
+* Using ```malloc()``` and ```mmap()``` is declaration of memory allocation, and the kernel doesnt actually allocate physical memory for it. ```memset()``` writes to the region, so that the memory is really allocated
 * Why overcommitment? <br>
   Some applications create large (usually private anonymous) mappings, but use only a small part of the mapped region. For example, certain types of scientific applications allocate a very large array, but operate on only a few widely separated elements of the array (a so-called sparse array).
 * Settings <br>
