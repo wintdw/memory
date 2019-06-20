@@ -70,7 +70,7 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 ```C
 #define MAPSIZE 1024*1024*1024l
 ...
-int *ptr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0);
+int *ptr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|**MAP_NORESERVE**, -1, 0);
 memset(ptr, 0, size/4);
 ```
 ```console
