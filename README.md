@@ -27,6 +27,7 @@
 * perf: performance analysis tools
 ## Process Memory Layout
 ### Layout
+![process memory layout](https://github.com/wintdw/memory/blob/master/proc_mem_layout.png "Process Memory Layout")
 ### Stack & Heap
 #### Simulation
 ```C
@@ -57,9 +58,9 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 ```
 #### Explanations
 * By default, stack size for a process is limited to 8192KB, while heap doesnt have any limit
-```console
-stack size              (kbytes, -s) 8192
-```
+  ```console
+  stack size              (kbytes, -s) 8192
+  ```
 * Primitive values are stored inside stack
 * Stack memory will be recycled when function returns
 * Heap memory can be leaked
