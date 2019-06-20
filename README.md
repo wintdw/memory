@@ -28,6 +28,10 @@
 ## Process Memory Layout
 ### Layout
 ![process memory layout](https://github.com/wintdw/memory/blob/master/proc_mem_layout.png "Process Memory Layout")
+* Virtual memory size is nearly infinite (256TB for 64bit machine)
+* Stack grows downward, Heap grows upward
+* Stack: automatic allocation & deallocation
+* Heap: dynamic & manual
 ### Stack & Heap
 #### Simulation
 ```C
@@ -64,7 +68,8 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 * Primitive values are stored inside stack
 * Stack memory will be recycled when function returns. Stack can not be leaked
 * Heap memory can be leaked
-## Memory Mechanism
+* Stack allocation is faster than the counterpart's
+## Memory Mechanisms
 ### Overcommitment
 #### Simulations
 ```C
@@ -100,7 +105,7 @@ Committed_AS:   13075236 kB   // 13G
 
 ### Out Of Memory (OOM)
 #### Simulation
-Same as Overcommit experiment
+Same as Overcommit experiment, just spawn more processes
 #### Result
 ```console
 # ./important & ./not_so_imp &
@@ -122,7 +127,12 @@ important is killed by OOM Killer
 
 not_so_imp is killed by OOM Killer
 ```
-
+#### Conclusions
+* Adjust oom_score_adj to advoid critical services being killed
+* Trigger OOM killer manually
+```console
+# echo f > /proc/sysrq-trigger 
+```
 ### Copy-On-Write (COW)
 ### Shared Memory - Inter-Process Communication (IPC)
 ### Transparent Hugepage (THP)
@@ -200,7 +210,7 @@ sys   0m7.272s
 Node 0, zone   Normal  64522 171562 156286 108640  56285  17902   3005    322    121     59   1199 
 Node 1, zone   Normal 253404 235857 186478  94067  28862   4424    463     66     45     39   2565 
 
-Allocation without compaction: (2565 + 1199) * 4M = 14.7G
+Allocation without compaction: (2565 + 1199) * 4M + (39 + 59) * 2M ~ 15G
   ```
 
 #### 5. Rerferences
