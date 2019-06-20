@@ -89,7 +89,7 @@ Committed_AS:   13075236 kB   // 13G
 * Why overcommitment? <br>
   Some applications create large (usually private anonymous) mappings, but use only a small part of the mapped region. For example, certain types of scientific applications allocate a very large array, but operate on only a few widely separated elements of the array (a so-called sparse array).
 * Settings
-  /proc/sys/vm/overcommit_memory
+  /proc/sys/vm/overcommit_memory <br>
   | Values  | MAP_NORESERVE    | Default                  |
   | ------- |:---------------: | -----------------------: |
   | 0       | Allow Overcommit | Deny Obvious Overcommit  |
