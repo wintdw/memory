@@ -14,6 +14,7 @@
 ## Prerequisites
 ### C Functions
 * memset: set the block memory to the specific value
+* fork: create a new process, copy the same memory layout of the parent
 * malloc: allocate memory region from the heap
 * alloca: allocate memory region from the stack
 * mmap: creates a new memory mapping in the calling process’s virtual address space
@@ -138,7 +139,12 @@ not_so_imp is killed by OOM Killer
 # echo f > /proc/sysrq-trigger 
 ```
 ### Shared Memory - Inter-Process Communication (IPC)
+#### Definition
+The memory region that may be simultaneously accessed by multiple programs with an intent to provide communication among them or avoid redundant copies
+#### Simulation
+```C
 
+```
 ### Copy-On-Write (COW)
 #### Definition
 A resource-management technique which is used to efficiently implement a "duplicate" or "copy" operation on modifiable resources. If a resource is duplicated but not modified, it is not necessary to create a new resource; the resource can be shared between the copy and the original. Modifications must still create a copy, hence the technique: the copy operation is deferred to the first write
