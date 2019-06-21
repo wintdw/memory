@@ -31,7 +31,7 @@
 * Virtual memory size is nearly infinite (256TB for 64bit machine)
 * Stack grows downward, Heap grows upward
 * Stack: automatic allocation & deallocation
-* Heap: dynamic & manual
+* Heap: dynamic & manual, much larger than stack
 ### Stack & Heap
 #### Simulation
 ```C
@@ -50,7 +50,7 @@ alloc_stack(ONEG);
 # gcc heapstack/stack.c -o stack 
 # ./heap & ./stack &
 ```
-#### Differences
+#### Difference
 ```console
 # Heap
 Address           Kbytes     RSS   Dirty Mode    Mapping
@@ -60,7 +60,7 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 Address           Kbytes     RSS   Dirty Mode    Mapping
 00007ffc39367000 1048584 1048584 1048584 rw---   [ stack ]
 ```
-#### Explanations
+#### Explanation
 * By default, stack size for a process is limited to 8192KB, while heap doesnt have any limit
   ```console
   stack size              (kbytes, -s) 8192
@@ -71,7 +71,9 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 * Stack allocation is faster than the counterpart's
 ## Memory Mechanisms
 ### Overcommitment
-#### Simulations
+#### Definition
+The assignment of more memory to a process virtual memory than the physical memory that are actually hosted. This is possible because a processs doesnt necesarily use all the memory it's assigned.
+#### Simulation
 ```C
 #define MAPSIZE 1024*1024*1024l
 ...
@@ -90,7 +92,7 @@ Address           Kbytes     RSS   Dirty Mode    Mapping
 # cat /proc/meminfo
 Committed_AS:   13075236 kB   // 13G
 ```
-#### Explanations
+#### Explanation
 * Using ```malloc()``` and ```mmap()``` is declaration of memory allocation, and the kernel doesnt actually allocate physical memory for it. ```memset()``` writes to the region, so that the memory is really allocated
 * Why overcommitment? <br>
   Some applications create large (usually private anonymous) mappings, but use only a small part of the mapped region. For example, certain types of scientific applications allocate a very large array, but operate on only a few widely separated elements of the array (a so-called sparse array).
@@ -104,8 +106,10 @@ Committed_AS:   13075236 kB   // 13G
   | 2     | Strict Overcommit | Strict Overcommit       |
 
 ### Out Of Memory (OOM)
+#### Definition
+No available memory can be allocated for use to processes. For this situation, kernel triggers ```OOM Killer``` to stop a hogging process for others to run properly.
 #### Simulation
-Same as Overcommit experiment, just spawn more processes
+Same as Overcommit experiment, just spawn more processes until something is killed
 #### Result
 ```console
 # ./important & ./not_so_imp &
@@ -127,16 +131,54 @@ important is killed by OOM Killer
 
 not_so_imp is killed by OOM Killer
 ```
-#### Conclusions
+#### Conclusion
 * Adjust oom_score_adj to advoid critical services being killed
 * Trigger OOM killer manually
 ```console
 # echo f > /proc/sysrq-trigger 
 ```
-### Copy-On-Write (COW)
 ### Shared Memory - Inter-Process Communication (IPC)
+
+### Copy-On-Write (COW)
+#### Definition
+A resource-management technique which is used to efficiently implement a "duplicate" or "copy" operation on modifiable resources. If a resource is duplicated but not modified, it is not necessary to create a new resource; the resource can be shared between the copy and the original. Modifications must still create a copy, hence the technique: the copy operation is deferred to the first write
+#### Simulation
+```C
+// Create a memory region for all the processes, private
+int *array = malloc(size);
+memset(array, 0, size);
+
+// Create 2^3 = 8 procs with the same private region
+pid_t child;
+if ((child = fork()) == 0) {
+    int devNull = open("/dev/null", O_WRONLY|O_CREAT|O_APPEND);
+    int b = write(devNull, array, size);
+}
+x3
+```
+```console
+# gcc copyonwrite.c -o copyonwrite
+# ./copyonwrite 2       # 2G for each process
+```
+#### Result
+```console
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                             
+31824 root      20   0 2101196 2.001g    900 S   0.0 51.8   0:04.41 copyonwrite                         
+31831 root      20   0 2101196 2.000g      0 S   0.0 51.8   0:00.03 copyonwrite                         
+31833 root      20   0 2101196 2.000g      0 S   0.0 51.8   0:00.00 copyonwrite                         
+31835 root      20   0 2101196 2.000g      0 S   0.0 51.8   0:00.00 copyonwrite                         
+31836 root      20   0 2101196 2.000g      0 S   0.0 51.8   0:00.00 copyonwrite                         
+31830 root      20   0 2101196 2.000g      0 S   0.0 51.8   0:00.08 copyonwrite                         
+31832 root      20   0 2101196 2.000g      0 S   0.0 51.8   0:00.03 copyonwrite                         
+31834 root      20   0 2101196 2.000g      0 S   0.0 51.8   0:00.00 copyonwrite
+```
+#### Explanation
+* The physical memory is not actually allocated under COW mechanism. It'll be allocated under first write to the mem region
+* COW helps saving memory while the child processes just forked and only read the memory from parent.
+#### References
+https://redis.io/topics/faq#background-saving-fails-with-a-fork-error-under-linux-even-if-i-have-a-lot-of-free-ram
 ### Transparent Hugepage (THP)
-#### 1. Simulations
+#### Simulation
 ```C
 #define MAPSIZE 1024*1024*1024l     // 1G
 long size = MAPSIZE * atol(argv[1]);
@@ -144,7 +186,7 @@ long size = MAPSIZE * atol(argv[1]);
 int *ptr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 madvise(ptr, MAPSIZE, MADV_HUGEPAGE);
 ```
-#### 2. Runtime metrics
+#### Runtime
 ```console
 # cat /sys/kernel/mm/transparent_hugepage/enabled
 always [madvise] never
@@ -174,7 +216,7 @@ AnonHugePages:   4098048 kB
        3.508520242 seconds time elapsed
 ```
 
-#### 3. Not a silver bullet
+#### Not a silver bullet
   * Waste of memory sometimes
   * Slower because of compact, migration...
   Example: Allocation of 20G...
@@ -213,5 +255,5 @@ Node 1, zone   Normal 253404 235857 186478  94067  28862   4424    463     66   
 Allocation without compaction: (2565 + 1199) * 4M + (39 + 59) * 2M ~ 15G
   ```
 
-#### 5. Rerferences
+#### Rerferences
 https://alexandrnikitin.github.io/blog/transparent-hugepages-measuring-the-performance-impact/
