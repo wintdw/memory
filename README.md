@@ -7,8 +7,8 @@
 * [Memory Mechanism](#memory-mechanism)<br>
   * [Overcommitment](#overcommitment)<br>
   * [Out Of Memory (OOM)](#out-of-memory-oom)<br>
-  * [Copy On Write (COW)](#copy-on-write-cow)<br>
   * [Shared Memory - Inter-process Communication (IPC)](#share-memory---inter-process-communication-ipc)<br>
+  * [Copy On Write (COW)](#copy-on-write-cow)<br>
   * [Transparent Hugepage (THP)](#transparent-hugepage-thp)<br>
 
 ## Prerequisites
@@ -141,10 +141,44 @@ not_so_imp is killed by OOM Killer
 ### Shared Memory - Inter-Process Communication (IPC)
 #### Definition
 The memory region that may be simultaneously accessed by multiple programs with an intent to provide communication among them or avoid redundant copies
+![shared memory](https://github.com/wintdw/memory/blob/master/sharedmem.gif "Shared memory")
 #### Simulation
+* Shared anonymous mapping 
 ```C
+// Shared region for both parent and child
+int *ptr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+memset(ptr, 1, MAPSIZE);
 
+pid_t child;
+if ((child = fork()) == 0) {
+    memset(ptr, 2, size);
+    // Map another private region on child
+    int *p = mmap(NULL, ONEG, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+    memset(p, 3, ONEG);
 ```
+```console
+# ./sharemem 2 &
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                             
+  505 root      20   0 3149768 3.000g 2.000g S   0.0 77.7   0:04.02 sharemem
+  477 root      20   0 2101192 2.001g 2.001g S   0.0 51.8   0:05.60 sharemem
+
+# cat /proc/meminfo
+Mapped:          2137732 kB
+Shmem:           2139348 kB     // 2G
+```
+* /dev/shm confusion
+```console
+# dd if=/dev/zero of=big bs=2M count=1000
+# ./mem 2   # try allocating 2G of mem to a process
+Segmentation Fault
+# cat /proc/meminfo
+MemAvailable:    1632024 kB
+Shmem:           2066996 kB     // 2G
+```
+#### Explanation
+* Shared memory region is mapped only one on physical memory
+* /dev/shm is also counted as Shared Memory, and can not be automatically evicted
 ### Copy-On-Write (COW)
 #### Definition
 A resource-management technique which is used to efficiently implement a "duplicate" or "copy" operation on modifiable resources. If a resource is duplicated but not modified, it is not necessary to create a new resource; the resource can be shared between the copy and the original. Modifications must still create a copy, hence the technique: the copy operation is deferred to the first write
