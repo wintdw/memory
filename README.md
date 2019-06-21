@@ -140,7 +140,7 @@ not_so_imp is killed by OOM Killer
 ```
 ### Shared Memory - Inter-Process Communication (IPC)
 #### Definition
-The memory region that may be simultaneously accessed by multiple programs with an intent to provide communication among them or avoid redundant copies
+The memory region that may be simultaneously accessed by multiple programs with an intent to provide communication among them or avoid redundant copies <br>
 ![shared memory](https://github.com/wintdw/memory/blob/master/sharedmem.gif "Shared memory")
 #### Simulation
 * Shared anonymous mapping 
