@@ -17,19 +17,13 @@ int main(int argc, char *argv[]) {
 	int *array = malloc(size);
 	memset(array, 0, size);
 
-	// Shared mem
+	// COW
 	pid_t child;
 	if ((child = fork()) == 0) {
-		int devNull = open("/dev/null", O_WRONLY|O_CREAT|O_APPEND);
-		write(devNull, array, size);
 	}
 	if ((child = fork()) == 0) {
-		int devNull = open("/dev/null", O_WRONLY|O_CREAT|O_APPEND);
-		write(devNull, array, size);
 	}
 	if ((child = fork()) == 0) {
-		int devNull = open("/dev/null", O_WRONLY|O_CREAT|O_APPEND);
-		write(devNull, array, size);
 	}
 
 	sleep(20000);
